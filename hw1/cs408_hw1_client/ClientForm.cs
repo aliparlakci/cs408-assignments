@@ -26,7 +26,10 @@ namespace cs408_hw1_client
             {
                 userNameInput.Text = "";
             });
+
+            _client.OnSuccessfulAccountCreation(ClearInputs);
         }
+        
         private void ClearInputs()
         {
             nameInput.Clear();

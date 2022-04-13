@@ -18,6 +18,7 @@ namespace cs408_hw1_client
 
         private Action onDisconnect;
         private Action onUsernameAlreadyExists;
+        private Action onSuccessfulAccountCreation;
 
         public Client(Logger logger)
         {
@@ -32,6 +33,11 @@ namespace cs408_hw1_client
         public void OnUsernameAlreadyExists(Action func)
         {
             onUsernameAlreadyExists = func;
+        }
+
+        public void OnSuccessfulAccountCreation(Action func)
+        {
+            onSuccessfulAccountCreation = func;
         }
 
         public void SetTerminating() { terminating = true; }
@@ -104,6 +110,12 @@ namespace cs408_hw1_client
             if (type == MessageType.Message)
             {
                 var message = CayGetirProtocol.ParseMessage(incomingMessage);
+
+                if (!message.Contains("created an account"))
+                {
+                    if (onSuccessfulAccountCreation != null) onSuccessfulAccountCreation();
+                }
+
                 _logger.Write($"{message}\n");
             }
         }
