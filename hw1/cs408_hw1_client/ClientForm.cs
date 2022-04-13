@@ -21,6 +21,18 @@ namespace cs408_hw1_client
                 newUserBox.Visible = false;
                 disconnectButton.Enabled = false;
             });
+
+            _client.OnUsernameAlreadyExists(() =>
+            {
+                userNameInput.Text = "";
+            });
+        }
+        private void ClearInputs()
+        {
+            nameInput.Clear();
+            surnameInput.Clear();
+            userNameInput.Clear();
+            passwordInput.Clear();
         }
 
         private void connectButton_Click(object sender, EventArgs e)
@@ -50,7 +62,7 @@ namespace cs408_hw1_client
             }
             else
             {
-                _logger.Write("Please check port number \n");
+                _logger.Write("Check the port number!\n");
                 connectBox.Enabled = true;
             }
         }

@@ -19,8 +19,6 @@ namespace cs408_hw1_server
         bool terminating = false;
         bool listening = false;
 
-        private Task<string> onMessage;
-
         public Server(Database db, Logger logger)
         {
             _db = db;
@@ -106,16 +104,19 @@ namespace cs408_hw1_server
                     {
                         string message = Encoding.Default.GetString(buffer);
                         message = message.Substring(0, message.IndexOf('\0'));
-                        
+
                         var user = CayGetirProtocol.ParseUser(message);
                         if (!_db.Exists(user.Username))
                         {
                             _db.InsertUser(user);
+                            _logger.Write($"{user.Username} has created an account!\n");
+                            var response = CayGetirProtocol.Message("You have created a new account!");
+                            Send(client, response);
                         }
                         else
                         {
-                            var response = CayGetirProtocol.Message("There is already an account with this username!");
                             _logger.Write($"An account with the username {user.Username} already exists!\n");
+                            var response = CayGetirProtocol.Error("There is already an account with this username!");
                             Send(client, response);
                         }
                     }

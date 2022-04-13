@@ -52,7 +52,7 @@ namespace cs408_hw1_server
             }
             else
             {
-                _logger.Write("Please check port number\n");
+                _logger.Write("Check the port number!\n");
             }
         }
 

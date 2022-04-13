@@ -16,7 +16,8 @@ namespace cs408_hw1_client
         bool terminating = false;
         bool connected = false;
 
-        public Action _onDisconnect;
+        private Action onDisconnect;
+        private Action onUsernameAlreadyExists;
 
         public Client(Logger logger)
         {
@@ -25,7 +26,12 @@ namespace cs408_hw1_client
 
         public void OnDisconnect(Action func)
         {
-            _onDisconnect = func;
+            onDisconnect = func;
+        }
+
+        public void OnUsernameAlreadyExists(Action func)
+        {
+            onUsernameAlreadyExists = func;
         }
 
         public void SetTerminating() { terminating = true; }
@@ -68,7 +74,7 @@ namespace cs408_hw1_client
                 clientSocket.Close();
                 connected = false;
 
-                if (_onDisconnect != null) _onDisconnect();
+                if (onDisconnect != null) onDisconnect();
 
                 return false;
             }
@@ -79,7 +85,27 @@ namespace cs408_hw1_client
         public void Disconnect()
         {
             clientSocket.Close();
-            if (_onDisconnect != null) _onDisconnect();
+            if (onDisconnect != null) onDisconnect();
+        }
+        private void HandleIncomingMessage(string incomingMessage)
+        {
+            var type = CayGetirProtocol.DetermineType(incomingMessage);
+
+            if (type == MessageType.Error)
+            {
+                var error = CayGetirProtocol.ParseError(incomingMessage);
+                if (error.Contains("already an account"))
+                {
+                    if (onUsernameAlreadyExists != null) onUsernameAlreadyExists();
+                    _logger.Write($"{error}\n");
+                }
+            }
+
+            if (type == MessageType.Message)
+            {
+                var message = CayGetirProtocol.ParseMessage(incomingMessage);
+                _logger.Write($"{message}\n");
+            }
         }
 
         private void receive()
@@ -94,7 +120,7 @@ namespace cs408_hw1_client
                         string message = Encoding.Default.GetString(buffer);
                         message = message.Substring(0, message.IndexOf('\0'));
 
-                        _logger.Write($"{CayGetirProtocol.ParseMessage(message)}\n");
+                        HandleIncomingMessage(message);
                     }
                 }
                 catch
@@ -110,7 +136,7 @@ namespace cs408_hw1_client
 
                     clientSocket.Close();
                     connected = false;
-                    if (_onDisconnect != null) _onDisconnect();
+                    if (onDisconnect != null) onDisconnect();
                     _logger.Write("Succesfully disconnected!\n");
                 }
             }
