@@ -40,7 +40,7 @@ namespace cs408_hw1_server
         {
             users = File.ReadAllLines(filename).Select(line =>
             {
-                var re = new Regex("username=(.+)&name=(.+)&surname=(.+)&password=(.+)");
+                var re = new Regex("username=(.*)&name=(.*)&surname=(.*)&password=(.*)");
                 var groups = re.Matches(line);
                 return new User
                 {

@@ -20,6 +20,7 @@ namespace cs408_hw1_client
                 connectBox.Enabled = true;
                 newUserBox.Visible = false;
                 disconnectButton.Enabled = false;
+                toolStripStatusLabel1.Text = "Not connected to the server";
             });
 
             _client.OnUsernameAlreadyExists(() =>
@@ -38,6 +39,37 @@ namespace cs408_hw1_client
             passwordInput.Clear();
         }
 
+        private bool VerifyInputs()
+        {
+            bool flag = true;
+
+            if (nameInput.Text == "")
+            {
+                _logger.Write("Please enter a name\n");
+                flag = false;
+            }
+
+            if (surnameInput.Text == "")
+            {
+                _logger.Write("Please enter a surname\n");
+                flag = false;
+            }
+
+            if (userNameInput.Text == "")
+            {
+                _logger.Write("Please enter a username\n");
+                flag = false;
+            }
+
+            if (passwordInput.Text == "")
+            {
+                _logger.Write("Please enter a password\n");
+                flag = false;
+            }
+
+            return flag;
+        }
+
         private void connectButton_Click(object sender, EventArgs e)
         {
             connectBox.Enabled = false;
@@ -47,7 +79,7 @@ namespace cs408_hw1_client
 
             if (Int32.TryParse(portInput.Text, out serverPort))
             {
-                if (_client.Connect(ip, serverPort))
+                if (_client.Connect(ip.Trim(), serverPort))
                 {
                     logBox.Enabled = true;
 
@@ -83,6 +115,11 @@ namespace cs408_hw1_client
 
         private void createUserButton_Click(object sender, EventArgs e)
         {
+            if (!VerifyInputs())
+            {
+                return;
+            }
+
             var message = CayGetirProtocol.Signup(nameInput.Text, surnameInput.Text, userNameInput.Text, passwordInput.Text);
             _client.Send(message);
         }

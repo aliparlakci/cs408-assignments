@@ -121,7 +121,7 @@ namespace cs408_hw1_server
                         }
                     }
                 }
-                catch
+                catch (SocketException ex)
                 {
                     if (!terminating)
                     {
