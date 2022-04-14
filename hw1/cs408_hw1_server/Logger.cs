@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace cs408_hw1_server
+namespace server
 {
     public class Logger
     {

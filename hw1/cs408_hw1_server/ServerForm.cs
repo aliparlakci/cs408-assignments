@@ -1,9 +1,17 @@
-namespace cs408_hw1_server
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace server
 {
     public partial class ServerForm : Form
     {
-        private delegate void SafeCallDelegateText(string text);
-
         private Server _server;
         private Logger _logger;
 
@@ -14,20 +22,7 @@ namespace cs408_hw1_server
 
             InitializeComponent();
 
-            _logger.SetWriter(WriteTextSafe);
-        }
-
-        private void WriteTextSafe(string text)
-        {
-            if (logBox.InvokeRequired)
-            {
-                var d = new SafeCallDelegateText(logBox.AppendText);
-                logBox.Invoke(d, new object[] { text });
-            }
-            else
-            {
-                logBox.AppendText(text);
-            }
+            _logger.SetWriter(logBox.AppendText);
         }
 
         private void listenButton_Click(object sender, EventArgs e)
@@ -43,7 +38,6 @@ namespace cs408_hw1_server
                     logBox.Enabled = true;
 
                     _logger.Write($"Started listening on port: {serverPort}\n");
-                    toolStripStatusLabel1.Text = $"Listening on port {serverPort}";
                 }
                 else
                 {

@@ -1,6 +1,12 @@
-namespace cs408_hw1_server
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace server
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
         ///  The main entry point for the application.
@@ -12,7 +18,8 @@ namespace cs408_hw1_server
             var logger = new Logger();
             var server = new Server(db, logger);
 
-            ApplicationConfiguration.Initialize();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ServerForm(server, logger));
         }
     }

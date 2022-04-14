@@ -1,4 +1,14 @@
-namespace cs408_hw1_client
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace client
 {
     public partial class ClientForm : Form
     {
@@ -20,7 +30,6 @@ namespace cs408_hw1_client
                 connectBox.Enabled = true;
                 newUserBox.Visible = false;
                 disconnectButton.Enabled = false;
-                toolStripStatusLabel1.Text = "Not connected to the server";
             });
 
             _client.OnUsernameAlreadyExists(() =>
@@ -30,7 +39,7 @@ namespace cs408_hw1_client
 
             _client.OnSuccessfulAccountCreation(ClearInputs);
         }
-        
+
         private void ClearInputs()
         {
             nameInput.Clear();
@@ -84,7 +93,6 @@ namespace cs408_hw1_client
                     logBox.Enabled = true;
 
                     _logger.Write($"You are connected!\n");
-                    toolStripStatusLabel1.Text = $"Connected to {ip}:{serverPort}";
 
                     newUserBox.Visible = true;
                     disconnectButton.Enabled = true;
