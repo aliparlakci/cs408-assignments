@@ -17,6 +17,7 @@ namespace server
 
         public ServerForm(Server server, Logger logger)
         {
+            Control.CheckForIllegalCrossThreadCalls = false;
             _server = server;
             _logger = logger;
 
